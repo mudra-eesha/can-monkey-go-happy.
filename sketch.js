@@ -1,7 +1,7 @@
 
 var monkey , monkey_running, monkeyCollide;
-var ground, invisiGround, groundImg,restartImg;
-var banana ,bananaImage, obstacle, obstacleImage,restart;
+var ground, invisiGround, groundImg;
+var banana ,bananaImage, obstacle, obstacleImage;
 var FoodGroup, obstacleGroup;
 var score = 0;
 var bananaScore = 0;
@@ -15,11 +15,11 @@ function preload(){
   monkeyCollide = loadAnimation("monkey_1.png");
   
   
-  groundImg = loadAnimation("ground.jpg") 
+  groundImg = loadAnimation("ground.png") 
   
   bananaImage = loadImage("banana.png");
   obstacleImage = loadImage("obstacle.png");
- restartImg = loadImage("Quick_restart.png")
+ 
 }
 
 function setup(){
@@ -28,10 +28,6 @@ function setup(){
   obstacleGroup = createGroup();
   bananaGroup = createGroup();
   
-  
-  restart = createSprite(80,230,10,10);
-  restart.addAnimation("Quick_restart.png");
-   restart.scale = 0.5;
  
   monkey = createSprite(80,230,10,10);
   monkey.scale = 0.12;
@@ -39,7 +35,7 @@ function setup(){
   monkey.addAnimation("collide", monkeyCollide);
   
     
-  ground = createSprite(300,340,600,10);
+  ground = createSprite(300,285,600,0);
   ground.scale = 1;
   
   ground.addAnimation("ground", groundImg);
@@ -56,7 +52,6 @@ function draw(){
   text("BANANAS COLLECTED: "+bananaScore,300,20);
   
   if (gameState === PLAY){
-     restart.visible = false;
     obstacles();
     bananas();
     score = score + Math.round(getFrameRate()/60);
@@ -64,7 +59,7 @@ function draw(){
     ground.velocityX = -(4+score*1.5/100);
   
     if(keyDown("space")&&monkey.y >= 235) {
-      monkey.velocityY = -13; 
+      monkey.velocityY = -15; 
     }
   
     monkey.velocityY = monkey.velocityY + 0.8
@@ -87,7 +82,7 @@ function draw(){
   
   if (gameState === END){
     ground.velocityX = 0;
-     restart.visible = true;
+    
     monkey.y = 235;
     monkey.scale = 0.12;
     monkey.changeAnimation("collide", monkeyCollide);
@@ -103,7 +98,16 @@ function draw(){
     fill("black");
     textSize(15);
     text("Press 'R' to play again", 240, 200);
+    
+    if (keyDown("r")){
+      bananaGroup.destroyEach();
+      obstacleGroup.destroyEach();
+      monkey.changeAnimation("monkey", monkey_running);
+      score = 0;
+      bananaScore = 0;
+      gameState = PLAY; 
     }
+  }
   
   
   
@@ -145,14 +149,7 @@ function obstacles(){
   
   
 }
-function reset(){
-      bananaGroup.destroyEach();
-      obstacleGroup.destroyEach();
-      monkey.changeAnimation("monkey", monkey_running);
-      score = 0;
-      bananaScore = 0;
-      gameState = PLAY; 
-    }
+
 
 
 
